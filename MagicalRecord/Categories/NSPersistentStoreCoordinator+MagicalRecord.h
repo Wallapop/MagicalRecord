@@ -10,6 +10,14 @@
 
 extern NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification;
 
+extern NSString * const kMagicalRecordPSCMismatchWillDeleteStore;
+extern NSString * const kMagicalRecordPSCMismatchDidDeleteStore;
+extern NSString * const kMagicalRecordPSCMismatchWillRecreateStore;
+extern NSString * const kMagicalRecordPSCMismatchDidRecreateStore;
+extern NSString * const kMagicalRecordPSCMismatchCouldNotDeleteStore;
+extern NSString * const kMagicalRecordPSCMismatchCouldNotRecreateStore;
+extern NSString * const kMagicalRecordPSCAddSqliteStoreAttemptFailed;
+
 @interface NSPersistentStoreCoordinator (MagicalRecord)
 
 + (NSPersistentStoreCoordinator *) MR_defaultStoreCoordinator;
@@ -29,6 +37,7 @@ extern NSString * const kMagicalRecordPSCDidCompleteiCloudSetupNotification;
 - (NSPersistentStore *) MR_addInMemoryStore;
 - (NSPersistentStore *) MR_addAutoMigratingSqliteStoreNamed:(NSString *) storeFileName;
 - (NSPersistentStore *) MR_addSqliteStoreNamed:(id)storeFileName withOptions:(__autoreleasing NSDictionary *)options;
+- (NSPersistentStore *) MR_addSqliteStoreNamed:(id)storeFileName configuration:(NSString *)configuration withOptions:(__autoreleasing NSDictionary *)options;
 
 - (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey localStoreNamed:(NSString *)localStoreName cloudStorePathComponent:(NSString *)subPathComponent;
 - (void) MR_addiCloudContainerID:(NSString *)containerID contentNameKey:(NSString *)contentNameKey localStoreNamed:(NSString *)localStoreName cloudStorePathComponent:(NSString *)subPathComponent completion:(void(^)(void))completionBlock;
