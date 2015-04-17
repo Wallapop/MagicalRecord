@@ -90,15 +90,19 @@ NSString * const kMagicalRecordPSCAddSqliteStoreAttemptFailed = @"kMagicalRecord
     
     if (!store && [MagicalRecord shouldDeleteStoreOnModelMismatch])
     {
-        // if first attempt failed, we try to recreate it (if `shouldDeleteStoreOnModelMismatch` is set to YES)
-        BOOL isMigrationError = (([error code] == NSPersistentStoreIncompatibleVersionHashError) || ([error code] == NSMigrationMissingSourceModelError) || ([error code] == NSMigrationError));
         BOOL isCocoaErrorDomain = [[error domain] isEqualToString:NSCocoaErrorDomain];
+        
+        // if first attempt failed, we try to recreate it (if `shouldDeleteStoreOnModelMismatch` is set to YES)
+        BOOL isMigrationError = isCocoaErrorDomain && (([error code] == NSPersistentStoreIncompatibleVersionHashError) || ([error code] == NSMigrationMissingSourceModelError) || ([error code] == NSMigrationError));
+        
+        // check if the database is corrupted
+        BOOL isDatabaseCorrupted = isCocoaErrorDomain && ([error code] == NSFileReadCorruptFileError); // [[[error userInfo] objectForKey:NSSQLiteErrorDomain] integerValue]==11;
         
         // In iOS7, CoreData fails to migrate the model even with simple upgrades on the model,
         // and on top of that, this API returns store=nil and error=nil, thanks Jonny Ive
         BOOL isMigrationErrorOniOS7 = (error==nil && NSFoundationVersionNumber<=NSFoundationVersionNumber_iOS_7_1);
         
-        if ((isCocoaErrorDomain && isMigrationError) || isMigrationErrorOniOS7)
+        if (isMigrationError || isDatabaseCorrupted || isMigrationErrorOniOS7)
         {
             store = [self MR_tryToRecreateStore:url
                                   configuration:configuration
