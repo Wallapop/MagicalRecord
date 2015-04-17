@@ -152,7 +152,7 @@ NSString * const kMagicalRecordPSCAddSqliteStoreAttemptFailed = @"kMagicalRecord
         *error = nil;
     }
     else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchCouldNotRecreateStore object:nil userInfo:@{@"Error": *error}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kMagicalRecordPSCMismatchCouldNotRecreateStore object:nil userInfo:@{@"Error": *error?:@"Error is nil"}];
     }
     
     return store;
